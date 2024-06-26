@@ -1,6 +1,6 @@
 veracode_static_scan:
   push:
-    trigger: true
+    trigger: false
     branches_to_run:
       - js-dynamic
     branches_to_exclude: null
@@ -10,7 +10,7 @@ veracode_static_scan:
       - opened
     target_branch:
       - master
-  analysis_on_platform: false
+  analysis_on_platform: true
   break_build_policy_findings: true
   break_build_invalid_policy: true
   break_build_on_error: false
@@ -18,8 +18,8 @@ veracode_static_scan:
     Veracode static scan faced a problem. Please contact your Veracode
     administrator for more information.
   policy: Veracode Recommended Medium + SCA
-  create_code_scanning_alert: false
-  create_issue: false
+  create_code_scanning_alert: true
+  create_issue: true
   issues:
     trigger: false
     commands:
