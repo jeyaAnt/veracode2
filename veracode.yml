@@ -11,16 +11,16 @@ veracode_static_scan:
       - opened
     target_branch:
       - default_branch
-  analysis_on_platform: true
+  analysis_on_platform: false
   break_build_policy_findings: false
   break_build_invalid_policy: false
   break_build_on_error: true
   error_message: Veracode static scan faced a problem.
   policy: Veracode Recommended Medium + SCA
-  create_code_scanning_alert: true
-  create_issue: true
+  create_code_scanning_alert: false
+  create_issue: false
   issues:
-    trigger: true
+    trigger: false
     commands:
       - Veracode Static Scan
 veracode_sca_scan:
