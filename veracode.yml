@@ -2,24 +2,23 @@ veracode_static_scan:
   push:
     trigger: false
     branches_to_run:
-      - js-dynamic
-    branches_to_exclude: null
+      - '*'
+    branches_to_exclude:
+      - branch-1
   pull_request:
     trigger: false
     action:
       - opened
     target_branch:
-      - master
-  analysis_on_platform: true
-  break_build_policy_findings: true
-  break_build_invalid_policy: true
-  break_build_on_error: false
-  error_message: >-
-    Veracode static scan faced a problem. Please contact your Veracode
-    administrator for more information.
+      - default_branch
+  analysis_on_platform: false
+  break_build_policy_findings: false
+  break_build_invalid_policy: false
+  break_build_on_error: true
+  error_message: Veracode static scan faced a problem.
   policy: Veracode Recommended Medium + SCA
-  create_code_scanning_alert: true
-  create_issue: true
+  create_code_scanning_alert: false
+  create_issue: false
   issues:
     trigger: false
     commands:
@@ -28,18 +27,17 @@ veracode_sca_scan:
   push:
     trigger: false
     branches_to_run:
-      - js-dynamic
-    branches_to_exclude: null
+      - '*'
+    branches_to_exclude:
+      - branch-1
   pull_request:
-    trigger: true
+    trigger: false
     action:
       - opened
     target_branch:
-      - master
-  break_build_on_error: true
-  error_message: >-
-    Veracode SCA scan faced a problem. Please contact your Veracode
-    administrator for more information.
+      - default_branch
+  break_build_on_error: false
+  error_message: Veracode static scan faced a problem.
   issues:
     trigger: false
     commands:
@@ -48,19 +46,18 @@ veracode_iac_secrets_scan:
   push:
     trigger: false
     branches_to_run:
-      - js-dynamic
-    branches_to_exclude: null
+      - '*'
+    branches_to_exclude:
+      - branch-1
   pull_request:
-    trigger: true
+    trigger: false
     action:
       - opened
     target_branch:
-      - master
+      - default_branch
   break_build_policy_findings: true
-  break_build_on_error: true
-  error_message: >-
-    Veracode IAC secrets scan faced a problem. Please contact your Veracode
-    administrator for more information.
+  break_build_on_error: false
+  error_message: Veracode static scan faced a problem.
   issues:
     trigger: false
     commands:
