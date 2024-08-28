@@ -36,9 +36,8 @@ jobs:
         VERACODE_API_KEY_ID: '${{ secrets.VERACODE_API_ID }}'
         VERACODE_API_KEY_SECRET: '${{ secrets.VERACODE_API_KEY }}'
       run: |
-        ls -lart /home/luser
-        pwd
-        source /home/luser/.rvm/scripts/rvm            #source ~/.rvm/scripts/rvm
+        export PATH="/home/luser/.rvm/bin:$PATH"
+        #source /home/luser/.rvm/scripts/rvm            #source ~/.rvm/scripts/rvm
         rvm install 3.3.4
         gem install rails -v 7.1.1
         cd veracode-helper/helper/cli
