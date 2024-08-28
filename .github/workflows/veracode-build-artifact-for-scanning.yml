@@ -25,6 +25,15 @@ jobs:
       ref: ${{ inputs.ref }}
       token: ${{ inputs.token }}
 
+      
+build-ruby:
+    if: ${{ inputs.event_name == 'ruby-pipeline-scan' || inputs.event_name == 'ruby-policy-scan' }}
+    uses: ./.github/workflows/veracode-build-dart.yml
+    with:
+      repository: ${{ inputs.repository }}
+      ref: ${{ inputs.ref }}
+      token: ${{ inputs.token }}
+      
   build-tsql-package:
     if: ${{ inputs.event_name == 'tsql-pipeline-scan' || inputs.event_name == 'tsql-policy-scan'  || inputs.event_name == 'tsql-sandbox-scan'}}
     uses: ./.github/workflows/veracode-build-tsql.yml
