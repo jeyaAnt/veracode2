@@ -43,6 +43,8 @@ jobs:
         sudo apt-get install -y rubygems ruby-dev
         sudo gem install rails -v 7.1.1
         ruby -v
+        sudo gem install veracode
+        sudo gem install bundler
         cd veracode-helper/helper/cli
         cliFile=$(ls -1 . | head -n 1)
         cliFileName=$(echo "$cliFile" | cut -c 1-$((${#cliFile}-7)))
