@@ -42,7 +42,7 @@ jobs:
         #export PATH="/home/luser/.rvm/bin:$PATH"
         source /etc/profile.d/rvm.sh
         rvm pkg install openssl
-        rvm install ruby-3.3.4
+        rvm install ruby-3.3.3
         #rvm use 3.3.3 --default
         #sudo apt-get update
         #sudo apt-get install -y ruby-dev rubygems
