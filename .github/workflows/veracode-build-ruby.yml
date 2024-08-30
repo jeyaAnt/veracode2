@@ -1,4 +1,5 @@
-name: Veracode Build
+name: Veracode Build Ruby Code Package
+
 on:
   workflow_call:
     inputs:
@@ -11,14 +12,15 @@ on:
       token:
         required: true
         type: string
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest           #${{ vars.CLIENT_ENV || 'ubuntu-latest' }}
     container:
-      image: janthony1986/scm-packaging:1.1.1      #surajkumargithub/scm-packaging:latest      #veracode/scm-packaging:2.1.0
-    env:
-      VERACODE_API_KEY_ID: '${{ secrets.VERACODE_API_ID }}'
-      VERACODE_API_KEY_SECRET: '${{ secrets.VERACODE_API_KEY }}'
+      image: janthony1986/scm-packaging:1.2.3    #arganguly20/scm-packaging:latest   #${{ vars.CLIENT_IMAGE_URL || 'veracode/scm-packaging' }}:${{ vars.CLIENT_IMAGE_TAG || '2.1.0' }}
+      #credentials:
+        #username: ${{ github.actor }}
+        #password: ${{ secrets.github_token }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -32,19 +34,23 @@ jobs:
 
     - name: Package the application
       id: application_package
+      shell: bash
       env:
         VERACODE_API_KEY_ID: '${{ secrets.VERACODE_API_ID }}'
         VERACODE_API_KEY_SECRET: '${{ secrets.VERACODE_API_KEY }}'
       run: |
-        export PATH="/home/luser/.rvm/bin:$PATH"
-        #source /home/luser/.rvm/scripts/rvm            #source ~/.rvm/scripts/rvm
-        rvm install 3.3.4
-        sudo apt-get update
-        sudo apt-get install -y rubygems ruby-dev
-        sudo gem install rails -v 7.1.1
-        ruby -v
-        sudo gem install veracode
-        sudo gem install bundler
+        #export PATH="/home/luser/.rvm/bin:$PATH"
+        source /etc/profile.d/rvm.sh
+        rvm pkg install openssl
+        rvm install ruby-3.3.3
+        #rvm use 3.3.3 --default
+        #sudo apt-get update
+        #sudo apt-get install -y ruby-dev rubygems
+        #sudo apt-get install -y vim
+        #sudo gem install rails -v 7.0.8.4
+        #sudo gem install veracode
+        #sudo gem install bundler
+        
         cd veracode-helper/helper/cli
         cliFile=$(ls -1 . | head -n 1)
         cliFileName=$(echo "$cliFile" | cut -c 1-$((${#cliFile}-7)))
@@ -52,9 +58,19 @@ jobs:
         cd $cliFileName
         export PATH="veracode-helper/helper/cli/$cliFileName:$PATH"
         cd /__w/veracode/veracode
-        veracode package --source . --output veracode-artifacts --trust --debug
+        
+        gem install bundler -v '2.4.6'
+        gem install veracode
+        bundle install
+        veracode prepare -vD
+        
+        veracode package --source . --output veracode-artifacts --trust
+        cp -r tmp/* veracode-artifacts
         zip veracode-artifact.zip veracode-artifacts/* -x .zip .tar .tar.gz .gz
-
+        
+        #docker pull veracode/scm-packaging:2.1.0
+        #docker run -v /__w/veracode/veracode:/files veracode/scm-packaging:2.1.0 /files/veracode-helper/helper/cli/$cliFileName/veracode package --source /files --output /files/veracode-artifacts --trust --debug
+      
     - name: Package error
       if: failure() && steps.application_package.outcome == 'failure'
       run: |
@@ -65,3 +81,107 @@ jobs:
         name: veracode-artifact
         path: /__w/veracode/veracode/veracode-artifacts/*
         if-no-files-found: error
+    
+    #- name: Cache bundle dependencies
+    #    uses: actions/cache@v3
+    #    with:
+    #      path: vendor/bundle
+    #      key: ${{ runner.os }}-bundle-${{ hashFiles('**/Gemfile.lock') }}
+    #      restore-keys: |
+    #        ${{ runner.os }}-bundle-
+
+    #- name: Install Dependencies
+    #    run: bundle install --path vendor/bundle
+
+    #- name: Package the Gem
+    #    run: gem build ${{ inputs.repository }}.gemspec
+
+    #- uses: actions/upload-artifact@v4
+    #    with:
+    #      name: veracode-artifact
+    #      path: veracode.gem
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# name: Veracode Build
+# on:
+#   workflow_call:
+#     inputs:
+#       repository:
+#         required: true
+#         type: string
+#       ref:
+#         required: true
+#         type: string
+#       token:
+#         required: true
+#         type: string
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     container:
+#       image: janthony1986/scm-packaging:1.1.1      #surajkumargithub/scm-packaging:latest      #veracode/scm-packaging:2.1.0
+#     env:
+#       VERACODE_API_KEY_ID: '${{ secrets.VERACODE_API_ID }}'
+#       VERACODE_API_KEY_SECRET: '${{ secrets.VERACODE_API_KEY }}'
+#     steps:
+#     - uses: actions/checkout@v4
+#       with:
+#         repository: ${{ inputs.repository }}
+#         ref: ${{ inputs.ref }}
+#         token: ${{ inputs.token }}
+
+#     - uses: actions/checkout@v4
+#       with:
+#         path: 'veracode-helper'
+
+#     - name: Package the application
+#       id: application_package
+#       env:
+#         VERACODE_API_KEY_ID: '${{ secrets.VERACODE_API_ID }}'
+#         VERACODE_API_KEY_SECRET: '${{ secrets.VERACODE_API_KEY }}'
+#       run: |
+#         export PATH="/home/luser/.rvm/bin:$PATH"
+#         #source /home/luser/.rvm/scripts/rvm            #source ~/.rvm/scripts/rvm
+#         rvm install 3.3.4
+#         sudo apt-get update
+#         sudo apt-get install -y rubygems ruby-dev
+#         sudo gem install rails -v 7.1.1
+#         ruby -v
+#         sudo gem install veracode
+#         sudo gem install bundler
+#         cd veracode-helper/helper/cli
+#         cliFile=$(ls -1 . | head -n 1)
+#         cliFileName=$(echo "$cliFile" | cut -c 1-$((${#cliFile}-7)))
+#         tar -zxvf $cliFile
+#         cd $cliFileName
+#         export PATH="veracode-helper/helper/cli/$cliFileName:$PATH"
+#         cd /__w/veracode/veracode
+#         veracode package --source . --output veracode-artifacts --trust --debug
+#         zip veracode-artifact.zip veracode-artifacts/* -x .zip .tar .tar.gz .gz
+
+#     - name: Package error
+#       if: failure() && steps.application_package.outcome == 'failure'
+#       run: |
+#         echo "::error::Veracode static scan faced a problem. Please contact your Veracode administrator for more information."
+
+#     - uses: actions/upload-artifact@v4
+#       with:
+#         name: veracode-artifact
+#         path: /__w/veracode/veracode/veracode-artifacts/*
+#         if-no-files-found: error
