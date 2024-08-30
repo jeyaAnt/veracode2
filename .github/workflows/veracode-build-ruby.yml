@@ -40,7 +40,7 @@ jobs:
         VERACODE_API_KEY_SECRET: '${{ secrets.VERACODE_API_KEY }}'
       run: |
         #export PATH="/home/luser/.rvm/bin:$PATH"
-        source /etc/profile.d/rvm.sh
+        veracode package --source . --output veracode-artifacts --trust    #source /etc/profile.d/rvm.sh
         rvm pkg install openssl
         rvm install ruby-3.3.3
         #rvm use 3.3.3 --default
