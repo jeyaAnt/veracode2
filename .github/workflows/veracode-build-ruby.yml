@@ -56,7 +56,7 @@ jobs:
         cliFileName=$(echo "$cliFile" | cut -c 1-$((${#cliFile}-7)))
         tar -zxvf $cliFile
         cd $cliFileName
-        export PATH="veracode-helper/helper/cli/$cliFileName:$PATH"
+        #export PATH="veracode-helper/helper/cli/$cliFileName:$PATH"
         cd /__w/veracode/veracode
         
         gem install bundler -v '2.4.6'
@@ -64,8 +64,8 @@ jobs:
         bundle install
         veracode prepare -vD
         
-        veracode package --source . --output veracode-artifacts --trust --debug
-        cp -r tmp/* veracode-artifacts
+        /__w/veracode/veracode/veracode-helper/helper/cli/$cliFileName/veracode package --source . --output veracode-artifacts --trust 
+        cp -r tmp/*.zip veracode-artifacts
         zip veracode-artifact.zip veracode-artifacts/* -x .zip .tar .tar.gz .gz
         
         #docker pull veracode/scm-packaging:2.1.0
