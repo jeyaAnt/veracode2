@@ -38,10 +38,10 @@ jobs:
       run: |
         export PATH="/home/luser/.rvm/bin:$PATH"
         #source /home/luser/.rvm/scripts/rvm            #source ~/.rvm/scripts/rvm
-        rvm install 3.3.4
+        rvm install 3.3.0
         sudo apt-get update
         sudo apt-get install -y rubygems ruby-dev
-        sudo gem install rails -v 7.1.1
+        sudo gem install rails -v 7.0.8.4
         ruby -v
         sudo gem install veracode
         sudo gem install bundler
